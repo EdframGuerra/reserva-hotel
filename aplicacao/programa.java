@@ -35,16 +35,16 @@ public class programa {
             System.out.print("Data do check-out: ");
             checkout = dataFormatada.parse(leitor.next());
 
-            Date now = new Date();
-            if (checkin.before(now) || checkout.before(now)) {
-                System.out.println("As datas da reservas devem ser para datas futuras");
-            } else if (!checkout.after(checkin)) {
-                System.err.println("A data do check-out não pode ser maior que a data do check-in");
+            String erro = reserva.atualizarReserva(checkin, checkout);
+
+            if(erro!=null){
+                System.out.println("Erro na reserva: "+erro);
             }
             else{
-                reserva.atualizarReserva(checkin, checkout);
                 System.err.println("Reserva: " + reserva);
             }
+            
+
             leitor.close();
         }
 
