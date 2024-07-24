@@ -1,8 +1,10 @@
-package reservaHotel;
+package entidades;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import Excecao.DominioException;
 
 public class Reserva {
 
@@ -12,7 +14,12 @@ public class Reserva {
 
     private static SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy");
 
-    public Reserva(Integer numeroQuarto, Date chekin, Date checkout) {
+    public Reserva(Integer numeroQuarto, Date chekin, Date checkout)  {
+
+        if (!checkout.after(chekin)) {
+            throw new DominioException("A data do check-out não pode ser antes da data do check-in");
+        }
+
         this.numeroQuarto = numeroQuarto;
         this.checkin = chekin;
         this.checkout = checkout;
@@ -40,23 +47,24 @@ public class Reserva {
         return TimeUnit.DAYS.convert(diferenca, TimeUnit.MILLISECONDS);
     }
 
-    public String atualizarReserva(Date checkin, Date checkout){
+    public void atualizarReserva(Date checkin, Date checkout)  {
         Date now = new Date();
         if (checkin.before(now) || checkout.before(now)) {
-            return "As datas da reservas devem ser para datas futuras";
-        } if (!checkout.after(checkin)) {
-          return "A data do check-out não pode ser maior que a data do check-in";
+            throw new DominioException("As datas da reservas devem ser para datas futuras");
+        }
+        if (!checkout.after(checkin)) {
+            throw new DominioException("A data do check-out não pode ser antes da data do check-in");
         }
 
         this.checkin = checkin;
         this.checkout = checkout;
-        return null;
+
     }
 
     @Override
     public String toString() {
-        return "Numero do quarto "+ numeroQuarto+" , chekin: "+dataFormatada.format(checkin)+", checkout: "+ dataFormatada.format(checkout)+", "+duracao()+ " noites";
+        return "Numero do quarto " + numeroQuarto + " , chekin: " + dataFormatada.format(checkin) + ", checkout: "
+                + dataFormatada.format(checkout) + ", " + duracao() + " noites";
 
-
-}
+    }
 }
